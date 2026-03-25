@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Attendance Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 50px; }
+    #reader { width: 300px; margin: auto; }
+    h2 { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<h2>QR Attendance Scanner</h2>
+<div id="reader"></div>
+
+<script>
+function onScanSuccess(qrMessage) {
+    // Example QR content: "1023,Zane,Grade11"
+    let parts = qrMessage.split(",");
+    if(parts.length < 3){
+        alert("Invalid QR format!");
+        return;
+    }
+
+    let id = parts[0].trim();
+    let name = parts[1].trim();
+    let cls = parts[2].trim();
+
+    // Replace with your Apps Script Web App URL
+    let url = `https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?id=${id}&name=${name}&class=${cls}`;
+
+    fetch(url)
+      .then(response => response.text())
+      .then(data => alert(data))
+      .catch(err => alert("Error: " + err));
+}
+
+// Initialize the QR scanner
+let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", { fps: 10, qrbox: 250 });
+html5QrcodeScanner.render(onScanSuccess);
+</script>
+
+</body>
+</html>
